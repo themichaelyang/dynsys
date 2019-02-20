@@ -37,17 +37,18 @@ def get_cobweb(trajectory):
     return coords
 
 
-# In[27]:
+# In[34]:
 
 
 logistic_family = lambda a: lambda x: a*x*(1-x)
-logistic_map = logistic_family(3.831880000011346)
+# logistic_map = logistic_family(3.831880000011346)
 # logistic_map = logistic_family(3.70177) 7-period
+logistic_map = logistic_family(3.5546)
 # logistic_map = logistic_family(3.5)
 
 
 # trajectory = iterate_map(logistic_map, (5 + math.sqrt(5)) / 8, 10)
-trajectory = iterate_map(logistic_map, 0.5, 20)
+trajectory = iterate_map(logistic_map, 0.5, 30)
 cobweb = get_cobweb(trajectory)
 plot = get_plot(logistic_map, 0, 1)
 
@@ -57,7 +58,7 @@ line = get_plot(identity_fn, 0, 1)
 # print(plot)
 
 
-# In[4]:
+# In[35]:
 
 
 fig, ax = plt.subplots(figsize=(10, 8))
@@ -154,4 +155,12 @@ print(find_periodic_powers(7, 3.569224999940971))
 
 # for wolfram alpha:
 # |(x - 2x((x + 1 + sqrt(x^2 -2x -3)) / (2x)))(x - 2x((x + 1 - sqrt(x^2 -2x -3)) / (2x)))| > 1
+
+
+# In[29]:
+
+
+binary_shift = get_plot(lambda x: 2*x % 1, 0, 1)
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.plot(binary_shift[:,0], binary_shift[:,1])
 
