@@ -161,3 +161,43 @@ import random
 
 problem_7(random.random())
 
+
+# In[88]:
+
+
+import math
+
+def flatten(matrix):
+    return [item for row in matrix for item in row]
+
+def make_trajectory_histogram(fn, x_0, exp, ax):
+    trajectory = iterate_map(fn, x_0, 10**exp)
+    ax.hist(trajectory, 100)
+    ax.set_title("$10^{0}$ iterates".format(exp))
+
+def problem_8(fn=lambda x: 4*x*(1-x), x_0=0.2):
+    fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+    axes = flatten(axes)
+    
+    for i in range(4):
+        make_trajectory_histogram(fn, x_0, (i + 3), ax=axes[i])
+    
+    fig.show()
+    fig.suptitle('Trajectory histograms at $x_0 = {0}$'.format(x_0), y=0.075)
+
+problem_8()
+
+
+# In[90]:
+
+
+problem_8(x_0=random.random())
+problem_8(x_0=random.random())
+
+
+# In[92]:
+
+
+problem_8(fn=lambda x: math.sin(math.pi*x), x_0=random.random())
+problem_8(fn=lambda x: 3.8*x*(1-x), x_0=random.random())
+
