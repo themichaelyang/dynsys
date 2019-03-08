@@ -50,7 +50,7 @@ def problem_1_log():
 problem_1_log()
 
 
-# In[22]:
+# In[32]:
 
 
 f = lambda x: x * (0.5 + x)
@@ -136,17 +136,17 @@ def problem_6():
 problem_6()
 
 
-# In[28]:
+# In[36]:
 
 
-def problem_7():
+def problem_7(x_0=0.2):
     interval = np.linspace(0, 4, 400)
     fig, ax = plt.subplots(figsize=(10, 8))
 
     logistic_map = lambda a: lambda x: a * x * (1 - x)
     logistic_map_deriv = lambda a: lambda x: a - (2 * a * x)
 
-    all_exponents = [lyapunov_exponent(logistic_map(a_i), logistic_map_deriv(a_i), 0.2, 10**4) 
+    all_exponents = [lyapunov_exponent(logistic_map(a_i), logistic_map_deriv(a_i), x_0, 10**5) 
                      for a_i in interval]
     ax.plot(interval, all_exponents)
     fig.show()
@@ -154,8 +154,10 @@ def problem_7():
 problem_7()
 
 
-# In[14]:
+# In[37]:
 
 
-(3.1 - 1) / 3.1
+import random
+
+problem_7(random.random())
 
