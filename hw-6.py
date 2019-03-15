@@ -87,7 +87,7 @@ def problem_5():
 problem_5()
 
 
-# In[279]:
+# In[291]:
 
 
 def problem_6():
@@ -104,14 +104,93 @@ def problem_6():
     axes[0].set_xlabel('a')
     axes[1].set_xlabel('a')
     
-    axes[0].set_ylabel('$x_n$')
-    axes[1].set_ylabel('$y_n$')
+    axes[0].set_ylabel('iterates 500 to 1000 of $x_n$')
+    axes[1].set_ylabel('iterates 500 to 1000 of $y_n$')
     
     fig.show()
 
 
-# In[290]:
+# In[292]:
 
 
 problem_6()
+
+
+# In[452]:
+
+
+def theta_circle(theta, radius=1):
+    return [radius * np.cos(theta), radius * np.sin(theta)]
+
+def part_2_problem_1():
+    fig, axes = plt.subplots(2, 1, figsize=(10, 16))
+    axes[0].set_aspect('equal')
+    axes[0].grid(True)
+    
+    g = lambda x, y: (2 * x, 0.5 * y + (x**2))
+    unit_circle = theta_circle(np.linspace(0, 2 * math.pi, 1000))
+    g_circle = np.apply_along_axis(
+        lambda row: iterate_map(g, row, 1)[-1],
+        0, 
+        unit_circle
+    )
+
+    axes[0].plot(unit_circle[0], unit_circle[1])
+    axes[0].plot(g_circle[0], g_circle[1])
+
+    g7_circle = np.apply_along_axis(
+        lambda row: iterate_map(g, row, 7)[-1],
+        0, 
+        unit_circle
+    )
+        
+    axes[1].plot(g7_circle[0], g7_circle[1])
+    
+    g_inv = lambda x, y: (x / 2, (2 * y) - ((x**2) / 2))
+    g7_inv_circle = np.apply_along_axis(
+        lambda row: iterate_map(g_inv, row, 7)[-1],
+        0, 
+        unit_circle
+    )
+    
+    axes[1].plot(g7_inv_circle[0], g7_inv_circle[1])
+    
+
+
+# In[453]:
+
+
+part_2_problem_1()
+
+
+# In[454]:
+
+
+def part_2_problem_2():
+    f = henon(0.4, 0.4)
+    circle = theta_circle(np.linspace(0, 2 * math.pi, 1000), 0.1)
+    
+    fig, ax = plt.subplots(figsize=(10, 16))
+    ax.set_aspect('equal')
+    ax.grid(True)
+    
+    fp_x = 0.4
+    fp_y = fp_x
+    ax.plot(circle[0] + fp_x, circle[1] + fp_y)
+    
+    f20_circle = np.apply_along_axis(
+        lambda row: iterate_map(f, row, 20)[-1],
+        0, 
+        [circle[0] + fp_x, circle[1] + fp_y] # circle with center at f.p.
+    )
+    
+    ax.scatter(f20_circle[0], f20_circle[1], s=1)
+    
+    
+
+
+# In[455]:
+
+
+part_2_problem_2()
 
