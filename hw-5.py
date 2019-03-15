@@ -201,3 +201,56 @@ problem_8(x_0=random.random())
 problem_8(fn=lambda x: math.sin(math.pi*x), x_0=random.random())
 problem_8(fn=lambda x: 3.8*x*(1-x), x_0=random.random())
 
+
+# In[93]:
+
+
+a = [2, 3, 6, 6, 5, 10, 10, 3, 4, 7]
+
+
+# In[95]:
+
+
+sum(a) / len(a)
+
+
+# In[97]:
+
+
+def poisson(x, theta):
+    return (math.e ** (-theta)) *            ((theta ** x) / math.factorial(x))
+    
+
+
+# In[98]:
+
+
+poisson(0, 5.6)
+
+
+# In[99]:
+
+
+sum([poisson(i, 5.6) for i in [3, 4, 5, 6, 7]])
+
+
+# In[101]:
+
+
+1 - sum([poisson(i, 5.6) for i in range(11)])
+
+
+# In[107]:
+
+
+from statistics import variance
+
+c = math.sqrt(variance(a)) * 1.645
+
+
+# In[108]:
+
+
+print(5.6 + c)
+print(5.6 - c)
+
