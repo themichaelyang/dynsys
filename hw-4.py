@@ -4,6 +4,10 @@
 # In[11]:
 
 
+# Heads up, future Mike! Turns out this is incorrect for constructing
+# the itinerary bounds. Take a look at pg 28 in the textbook. 
+
+# Tent map does have the nice property of halving every time though.
 from fractions import Fraction 
 
 itinerary = 'LLRRLRLLR'
