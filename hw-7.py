@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[16]:
+# In[3]:
 
 
 get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
@@ -25,7 +25,7 @@ henon = lambda a, b: lambda x, y: np.asarray((a - (x**2) + b * y, x))
 henon_inv = lambda a, b: lambda x, y: np.asarray((y, (x + y**2 - a) / b))
 
 
-# In[17]:
+# In[4]:
 
 
 # def problem_1():
@@ -39,7 +39,7 @@ def make_polygon(corners, total_pts):
         (x_end, y_end) = corners[(i+1) % len(corners)]
         
         side_points = np.array([np.linspace(x_start, x_end, pts_per_side), 
-         np.linspace(y_start, y_end, pts_per_side)]).T
+                                np.linspace(y_start, y_end, pts_per_side)]).T
         
 #         np.linspace(x_start, x_end, pts_per_side)
 #         np.interp(,  [x_start, x_end], [y_start, y_end])
@@ -48,7 +48,7 @@ def make_polygon(corners, total_pts):
     return points
 
 
-# In[18]:
+# In[9]:
 
 
 def recur(fn, x_in, y_in, remaining):
@@ -62,8 +62,8 @@ def problem_1():
     a = 4
     b = 0.2
     
-    fig1, ax1 = plt.subplots(figsize=(16, 16))
-    fig2, ax2 = plt.subplots(figsize=(16, 16))
+    fig1, ax1 = plt.subplots(figsize=(8, 8))
+    fig2, ax2 = plt.subplots(figsize=(8, 8))
     
     ax1.set_aspect('equal')
     ax1.set_ylim(-6, 6)
@@ -88,7 +88,7 @@ def problem_1():
     ax1.scatter(trapezoid_f1_inv[0], trapezoid_f1_inv[1], c=dist, s=0.1, cmap=plt.get_cmap('cool'))
     
     # Plot trapezoid, f4 and f4_inv
-    ax2.scatter(trapezoid_x, trapezoid_y, c=dist, s=0.1, cmap=plt.get_cmap('cool'))
+    ax2.scatter(trapezoid_x, trapezoid_y, s=0.1, color="tomato")
     
     henon4 = lambda a, b: lambda x, y: recur(henon(a, b), x, y, 4)
     henon4_inv = lambda a, b: lambda x, y: recur(henon_inv(a, b), x, y, 4)
@@ -96,17 +96,17 @@ def problem_1():
     trapezoid_f4 = henon4(a, b)(trapezoid_x, trapezoid_y)
     trapezoid_f4_inv = henon4_inv(a, b)(trapezoid_x, trapezoid_y)
     
-    ax2.scatter(trapezoid_f4[0], trapezoid_f4[1], s=0.1, color="red")
-    ax2.scatter(trapezoid_f4_inv[0], trapezoid_f4_inv[1], s=0.1, color="green")
+    ax2.scatter(trapezoid_f4[0], trapezoid_f4[1], s=0.1, color="orange")
+    ax2.scatter(trapezoid_f4_inv[0], trapezoid_f4_inv[1], s=1, color="dodgerblue")
 
 
-# In[19]:
+# In[10]:
 
 
 problem_1()
 
 
-# In[179]:
+# In[33]:
 
 
 import functools
@@ -143,7 +143,7 @@ def make_ifs(fns, probabilities=[]):
     return apply_ifs
         
 
-def iterate_map(f, x_0, n):
+def iterate_map_vec(f, x_0, n):
     # extended for multi-dim case
     # trajectory = [x_0] * (n+1)
     trajectory = np.stack([x_0] * (n+1), axis=0)
@@ -165,7 +165,7 @@ def problem_2():
     f3 = lambda x: np.array((x[0]/2 + 1/2, x[1]/2))
     
     ifs = make_ifs([f1, f2, f3])
-    trajectory = iterate_map(ifs, [0.5, 0.5], 10**5)
+    trajectory = iterate_map_vec(ifs, [0.5, 0.5], 10**5)
     
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.set_aspect('equal')
@@ -178,18 +178,62 @@ def problem_2():
     ax.scatter(square_f1[0], square_f1[1], s=1)
     ax.scatter(square_f2[0], square_f2[1], s=1)
     ax.scatter(square_f3[0], square_f3[1], s=1)
-    ax.scatter(trajectory[:,0].flatten(), trajectory[:,1].flatten(), s=1)
+    ax.scatter(trajectory[:,0].flatten(), trajectory[:,1].flatten(), s=0.1, color="mediumpurple")
 
 
-# In[180]:
+# In[34]:
 
 
 problem_2()
 
 
-# In[178]:
+# In[35]:
 
 
 # np.apply_along_axis(lambda line: print(line), 0, [[1, 2, 3], [4, 5, 6]])
 # np.apply_along_axis(lambda line: print(line), 1, [[1, 2, 3], [4, 5, 6]])
+
+
+# In[46]:
+
+
+# deterministic IFS
+def make_difs(fns, probabilities=[]):
+    # create prob thresholds
+    if not probabilities:
+        probabilities = [1/len(fns)] * len(fns)
+    thresholds = functools.reduce(lambda l, el: l + [l[-1] + el], probabilities, [0])[1:]
+    
+    def apply_ifs(x): # let x be a vector of inputs and z at end
+        z = x[-1]
+        z_shifted = (z*len(fns)) % 1
+        
+        for i in range(len(thresholds)):
+            if z < thresholds[i]:
+                return [*fns[i](x), z_shifted]
+        else:
+            return [*fns[len(fns) - 1](x), z_shifted]
+        
+    return apply_ifs
+
+def problem_3():
+    f1 = lambda x: np.array((x[0]/2, x[1]/2))
+    f2 = lambda x: np.array((x[0]/2 + 1/4, x[1]/2 + 1/2))
+    f3 = lambda x: np.array((x[0]/2 + 1/2, x[1]/2))
+    
+    difs = make_difs([f1, f2, f3])
+    random_xyz = [np.random.random(), np.random.random(), np.random.random()]
+    
+    trajectory = iterate_map_vec(difs, random_xyz, 10**6)
+    
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.set_aspect('equal')
+    
+    ax.scatter(trajectory[:,0].flatten(), trajectory[:,1].flatten(), s=0.1, color="mediumpurple")
+
+
+# In[47]:
+
+
+problem_3()
 
