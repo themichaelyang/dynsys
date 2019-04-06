@@ -347,11 +347,11 @@ def problem_5e():
 problem_5e()
 
 
-# In[208]:
+# In[226]:
 
 
 def get_boxes(x, boxes):
-    return np.floor((x + abs(min(x))) * boxes)
+    return np.floor((x) * boxes)
 
 def problem_6():
     fn = henon(1.4, 0.3)
@@ -362,17 +362,24 @@ def problem_6():
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.plot(traj_x, traj_y, 'o', markersize=0.1, color='#FF8686')
     
-    boxes = 10**5
+    boxes_per_side = 10**5
+    boxes = boxes_per_side ** 2
     
-    box_coords = np.array([get_boxes(traj_x, boxes), get_boxes(traj_y, boxes)]).T
+    box_coords = np.array([get_boxes(traj_x, boxes_per_side), get_boxes(traj_y, boxes_per_side)]).T
     covering_boxes = len(np.unique(box_coords))
     
     print("Box counting dimension: ")
     print(np.log(covering_boxes) / np.log(boxes))
 
 
-# In[209]:
+# In[227]:
 
 
 problem_6()
+
+
+# In[221]:
+
+
+np.unique([[1., 2.], [1., 2.]])
 
