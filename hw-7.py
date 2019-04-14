@@ -240,7 +240,7 @@ def problem_2():
     ax.scatter(trajectory[:,0].flatten(), trajectory[:,1].flatten(), s=0.1, color="mediumpurple")
 
 
-# In[8]:
+# In[246]:
 
 
 problem_2()
@@ -347,39 +347,36 @@ def problem_5e():
 problem_5e()
 
 
-# In[226]:
+# In[244]:
 
 
-def get_boxes(x, boxes):
-    return np.floor((x) * boxes)
+def get_boxes(x, n):
+#     return np.floor((x) * boxes)
+    return (x) // (1 / n) # round towards zero
 
 def problem_6():
     fn = henon(1.4, 0.3)
-    trajectory = iterate_map(fn, [0.2, 0.2], 10**5 - 1)
+    trajectory = iterate_map(fn, [0.2, 0.2], 10**6 - 1)
     traj_x = trajectory[:,0].flatten()
     traj_y = trajectory[:,1].flatten()
     
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.plot(traj_x, traj_y, 'o', markersize=0.1, color='#FF8686')
     
-    boxes_per_side = 10**5
-    boxes = boxes_per_side ** 2
+    n = 10**5
+    boxes = n ** 2
     
-    box_coords = np.array([get_boxes(traj_x, boxes_per_side), get_boxes(traj_y, boxes_per_side)]).T
+    box_coords = np.array([get_boxes(traj_x, n), get_boxes(traj_y, n)]).T
     covering_boxes = len(np.unique(box_coords))
     
+    print(covering_boxes)
+    
     print("Box counting dimension: ")
-    print(np.log(covering_boxes) / np.log(boxes))
+    print(np.log(covering_boxes) / np.log(n))
 
 
-# In[227]:
+# In[245]:
 
 
 problem_6()
-
-
-# In[221]:
-
-
-np.unique([[1., 2.], [1., 2.]])
 
