@@ -63,3 +63,56 @@ def part1_problem1():
 
 part1_problem1()
 
+
+# In[70]:
+
+
+def part1_problem2():
+    starting = [(1, 1, 8),
+                (1.01, 1, 8)]
+    
+    lorenz = lambda rho, sigma, beta:                 lambda x: np.array([sigma * (x[1] - x[0]), 
+                                    rho * x[0] - x[1] - x[0] * x[2],
+                                    -beta * x[2] + x[0] * x[1]])
+    
+    # x is 3 dim
+    for pt in starting:
+        t, coords = modified_euler(pt, 0, 50, lorenz(15, 10, 8/3), 1/1000)
+        x = coords[:,0]
+    
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.plot(t, x)
+
+
+# In[71]:
+
+
+part1_problem2()
+
+
+# In[85]:
+
+
+def part1_problem3():
+    starting = [(np.sqrt(72), np.sqrt(72), 27),
+                (-np.sqrt(72), -np.sqrt(72), 27),
+                (0, 0, 0)]
+    
+    lorenz = lambda rho, sigma, beta:                 lambda x: np.array([sigma * (x[1] - x[0]), 
+                                    rho * x[0] - x[1] - x[0] * x[2],
+                                    -beta * x[2] + x[0] * x[1]])
+    
+    # x is 3 dim
+    for pt in starting:
+        t, coords = modified_euler(pt, 0, 50, lorenz(28, 10, 8/3), 1/1000)
+        x = coords[:,0]
+    
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.plot(t, x)
+
+
+# In[86]:
+
+
+part1_problem3()
+
