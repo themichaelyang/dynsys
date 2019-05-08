@@ -186,7 +186,7 @@ def rossler(a=0.2, b=0.2, c=5.7):
     return system
 
 
-# In[186]:
+# In[194]:
 
 
 from mpl_toolkits.mplot3d import Axes3D
@@ -196,11 +196,11 @@ def plot3d(*args, **kwargs):
     ax = fig.gca(projection='3d')
     ax.plot(*args, **kwargs)
 
-def part2_problem1():
-    system = rossler(b=1.55)
+def part2_problem1(b=1.55):
+    system = rossler(b=b)
     start = (1, 1, 0)
     
-    ts, trajectory = modified_euler(start, 0, 1500, system, 1/100)
+    ts, trajectory = modified_euler(start, 0, 1500, system, 1/200)
     
     # get first index > 1000
     index_1000 = np.argmax(ts > 1000)
@@ -211,8 +211,116 @@ def part2_problem1():
     plot3d(xs, ys, zs)
 
 
-# In[187]:
+# In[195]:
 
 
 part2_problem1()
+
+
+# In[196]:
+
+
+part2_problem1(1.42)
+
+
+# In[197]:
+
+
+for b in [0.8, 0.72, 0.2]:
+    part2_problem1(b)
+
+
+# In[263]:
+
+
+# what's a return map?
+
+def plot(*args, **kwargs):
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.gca()
+    ax.plot(*args, **kwargs)
+
+def scatter(*args, **kwargs):
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.gca()
+    ax.scatter(*args, **kwargs)
+    
+def part2_problem2(b=1.55):
+    system = rossler(b=b)
+    start = (1, 1, 0)
+    
+    ts, trajectory = modified_euler(start, 0, 1500, system, 1/1000)
+    
+    x_prev = trajectory[0][0]
+    ys_crossing = []
+    
+    for pt in trajectory[1:]:
+        x, y, z = pt
+        
+        if x_prev > 0 and x < 0:
+            ys_crossing.append(y)
+            
+            if len(ys_crossing) >= 500:
+                break
+        
+        x_prev = x
+        
+    scatter(range(len(ys_crossing)), ys_crossing, s=1)
+
+
+# In[262]:
+
+
+part2_problem2()
+
+
+# In[225]:
+
+
+for b in [1.42, 0.8, 0.72, 0.2]:
+    part2_problem2(b)
+
+
+# In[268]:
+
+
+def find_crossing_y(trajectory):
+    x_prev = trajectory[0][0]
+    ys_crossing = []
+
+    for pt in trajectory[1:]:
+        x, y, z = pt
+
+        if x_prev > 0 and x < 0:
+            ys_crossing.append(y)
+            
+            if len(ys_crossing) > 500:
+                return ys_crossing
+
+        x_prev = x
+    
+    return ys_crossing
+    
+
+def part2_problem3():
+    bs = []
+    ys = []
+    
+    for b in np.linspace(0.2, 2, 500):
+        system = rossler(b=b)
+        start = (1, 1, 0)
+    
+        ts, trajectory = modified_euler(start, 0, 1500, system, 1/10)
+        
+        ys_crossing = find_crossing_y(trajectory)[100:]
+        ys.extend(ys_crossing)
+        bs.extend([b] * len(ys_crossing))
+    
+    plot(bs, ys, 'o', markersize=1)
+
+
+# In[269]:
+
+
+part2_problem3()
 
