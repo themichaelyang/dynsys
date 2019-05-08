@@ -116,3 +116,103 @@ def part1_problem3():
 
 part1_problem3()
 
+
+# In[87]:
+
+
+def part1_problem4():
+    lorenz = lambda rho, sigma, beta:                 lambda x: np.array([sigma * (x[1] - x[0]), 
+                                    rho * x[0] - x[1] - x[0] * x[2],
+                                    -beta * x[2] + x[0] * x[1]])
+    starting = (1, 1, 8)
+    t, coords = modified_euler(starting, 0, 4000, lorenz(28, 10, 8/3), 1/1000)
+
+    x = coords[:,0]
+    z = coords[:,2]
+    
+    fig, ax = plt.subplots(figsize=(12, 8))
+    ax.plot(x, z)
+
+
+# In[88]:
+
+
+part1_problem4()
+
+
+# In[136]:
+
+
+def part1_problem5():
+    lorenz = lambda rho, sigma, beta:                 lambda x: np.array([sigma * (x[1] - x[0]), 
+                                    rho * x[0] - x[1] - x[0] * x[2],
+                                    -beta * x[2] + x[0] * x[1]])
+    starting = (1, 1, 8)
+    t, coords = modified_euler(starting, 0, 4000, lorenz(28, 10, 8/3), 1/1000)
+    
+    z_prev = coords[0][2]
+    
+    xs = []
+    ys = []
+    above = []
+    
+    for pt in coords[1:]:
+        x, y, z = pt
+        if z < 28 and z_prev > 28:
+            ys.append(y)
+            xs.append(x)
+            above.append(int(y > x))
+        z_prev = z
+    
+    fig, ax = plt.subplots(figsize=(12, 8))
+    ax.scatter(xs, ys, c=above[1:] + [1], s=1)
+
+
+# In[137]:
+
+
+part1_problem5()
+
+
+# In[163]:
+
+
+def rossler(a=0.2, b=0.2, c=5.7):
+    def system(u): 
+        x, y, z = u
+        return np.array([-y - z,
+                         x + a*y,
+                         b + z*(x-c)])
+    return system
+
+
+# In[186]:
+
+
+from mpl_toolkits.mplot3d import Axes3D
+
+def plot3d(*args, **kwargs):
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    ax.plot(*args, **kwargs)
+
+def part2_problem1():
+    system = rossler(b=1.55)
+    start = (1, 1, 0)
+    
+    ts, trajectory = modified_euler(start, 0, 1500, system, 1/100)
+    
+    # get first index > 1000
+    index_1000 = np.argmax(ts > 1000)
+
+    # coords to lists, get trajectory for t > 1000
+    xs, ys, zs = zip(*trajectory[index_1000:])
+    
+    plot3d(xs, ys, zs)
+
+
+# In[187]:
+
+
+part2_problem1()
+
