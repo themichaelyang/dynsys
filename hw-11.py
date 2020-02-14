@@ -158,6 +158,7 @@ def part1_problem5():
     
     for pt in coords[1:]:
         x, y, z = pt
+        # could have used xor or diff to vectorize
         if z < 28 and z_prev > 28:
             ys.append(y)
             xs.append(x)
@@ -165,6 +166,8 @@ def part1_problem5():
         z_prev = z
     
     fig, ax = plt.subplots(figsize=(12, 8))
+    
+    # color based on if next is above/below y>x
     ax.scatter(xs, ys, c=above[1:] + [1], s=1)
 
 
@@ -257,6 +260,7 @@ def part2_problem2(b=1.55):
     for pt in trajectory[1:]:
         x, y, z = pt
         
+        # could vectorize
         if x_prev > 0 and x < 0:
             ys_crossing.append(y)
             
@@ -281,7 +285,7 @@ for b in [1.42, 0.8, 0.72, 0.2]:
     part2_problem2(b)
 
 
-# In[268]:
+# In[270]:
 
 
 def find_crossing_y(trajectory):
@@ -303,23 +307,29 @@ def find_crossing_y(trajectory):
     
 
 def part2_problem3():
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.gca()
+    
     bs = []
     ys = []
     
-    for b in np.linspace(0.2, 2, 500):
+    for b in np.linspace(0.2, 2, 100):
         system = rossler(b=b)
         start = (1, 1, 0)
     
         ts, trajectory = modified_euler(start, 0, 1500, system, 1/10)
         
+        # could vectorize somehow?
         ys_crossing = find_crossing_y(trajectory)[100:]
+        
         ys.extend(ys_crossing)
-        bs.extend([b] * len(ys_crossing))
+        bs.extend([b] * len(ys_crossing)) 
+        ax.plot([b] * len(ys_crossing), ys_crossing, 'o', markersize=1)
     
     plot(bs, ys, 'o', markersize=1)
 
 
-# In[269]:
+# In[271]:
 
 
 part2_problem3()
